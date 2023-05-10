@@ -78,6 +78,36 @@ function draw() {
 	// background(100);
 	clear();
 
+	drawPolys();
+	drawNodes();
+	drawBalls();
+	drawCursor();
+
+
+	drawInfoText();
+
+	fill(255);
+	noStroke();
+	circle(mouseX, mouseY, 6);
+}
+
+function drawInfoText() {
+	fill(100);
+	noStroke();
+	textSize(24);
+	text(settingsObject.zoom + '\n' + 
+			settingsObject.offset.x + ' ' + settingsObject.offset.y + '\n' + 
+			settingsObject.zOffset.x + ' ' + settingsObject.zOffset.y, 60, 40);
+}
+
+function drawBalls() {
+	balls.forEach(ball => {
+		ball.update();
+		ball.draw();
+	});
+}
+
+function drawPolys() {
 	polys.forEach(poly => {
 		stroke(150);
 		fill(0, 0, 255);
@@ -89,7 +119,9 @@ function draw() {
 		});
 		endShape(CLOSE);
 	});
+}
 
+function drawNodes() {
 	nodes.forEach(node => {
 		noStroke();
 		fill(255, 0, 0);
@@ -102,7 +134,9 @@ function draw() {
 		}
 		balls[i].draw();
 	}
-	
+}
+
+function drawCursor() {
 	noFill();
 	drawingContext.setLineDash([5, 5]);
 	stroke(120);
@@ -110,19 +144,7 @@ function draw() {
 	drawingContext.setLineDash([]);
 	fill(255);
 	ellipse(mouseX, mouseY, 21, 21);
-
-	fill(100);
-	noStroke();
-	textSize(24);
-	text(settingsObject.zoom + '\n' + 
-			settingsObject.offset.x + ' ' + settingsObject.offset.y + '\n' + 
-			settingsObject.zOffset.x + ' ' + settingsObject.zOffset.y, 60, 40);
-
-	fill(255);
-	noStroke();
-	circle(mouseX, mouseY, 6);
 }
-
 
 
 // Вспомогательная функция, которая реагирует на изменения размера
@@ -136,10 +158,12 @@ function mouseClicked() {
 	// console.log(mouseX, mouseY);
 	// console.log(myMap.pixelToLatLng(mouseX, mouseY));
 	let coords = myMap.pixelToLatLng(mouseX, mouseY);
+	
 	if (keyIsPressed === true && keyCode === CONTROL) {
-		objs.push(myMap.pixelToLatLng(mouseX, mouseY));
+		balls.push(new Ball(10, createVector(coords.lat, coords.lng), createVector(0, 0), createVector(0, 0), myMap));
+		// console.log(coords);
 	} else {
-		queryOSM(coords);
+		queryOSM(makeQueryFromCoords(coords));
 	}
 }
 

@@ -15,6 +15,7 @@ class Ball {
 	}
 
 	draw() {
+		circle(this.pos.x, this.pos.y, 10);
 		let color = constrain(map(this.vel.mag(), 0, 10, 240, 40), 40, 240);
 		// console.log(this.vel.mag());
 		// console.log(color);
